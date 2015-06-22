@@ -2,7 +2,7 @@
 title: "PracticalMachineLearning-001predictionMotivation"
 author: "esdeewhy"
 date: "June 21, 2015"
-output: pdf_document
+output: html_document
 ---
 
 BACKGROUND
@@ -27,13 +27,13 @@ The data consists of 160 columns and 19622 rows. We will clean the data in order
 
 ```{r}
 # Remove any nonquantitative variables
-trainingSub <- training[-c(1:7)]
-trainingSubQuant <- trainingSub[, sapply(trainingSub, is.numeric)]
-trainingSubQuant$classe <- training$classe
+testingData <- training[-c(1:7)]
+trainingtestingQtty <- testingData[, sapply(testingData, is.numeric)]
+trainingtestingQtty$classe <- training$classe
 # Removing all columsn with only NA values
-trainingSubQuant <- trainingSubQuant[,! colSums(is.na(trainingSubQuant)) >= 19216]
+trainingtestingQtty <- trainingtestingQtty[,! colSums(is.na(trainingtestingQtty)) >= 19216]
 
-dim(trainingSubQuant)
+dim(trainingtestingQtty)
 ```
 
 MODELING
@@ -41,7 +41,7 @@ MODELING
 We will use Random forests in order to generate the prediction model from the training data set.
 ```{r}
 
-trainingSet <- trainingSubQuant
+trainingSet <- trainingtestingQtty
 # Random forest to find the classification model with training.train data set.
 Rmodel <- randomForest(classe ~ ., data=trainingSet, ntree=50)
 print(Rmodel)
@@ -56,19 +56,19 @@ The same variables used in the model generated from the training set must also b
 ```{r}
 # Remove any nonquantitative variables
 testingSub <- testing[-c(1:7)]
-testingSubQuant <- testingSub[, sapply(testingSub, is.numeric)]
+testingtestingQtty <- testingSub[, sapply(testingSub, is.numeric)]
 
 ## Add back the Classe variable
-testingSubQuant$classe <- testing$classe
+testingtestingQtty$classe <- testing$classe
 
 # Data cleanup
 
 ## Remove all columsn that are only NA values
-testingSubQuant <- testingSubQuant[,! colSums(is.na(testingSubQuant)) >= 19216]
+testingtestingQtty <- testingtestingQtty[,! colSums(is.na(testingtestingQtty)) >= 19216]
 
-pred <- as.character(predict(Rmodel, testingSubQuant))
+pred <- as.character(predict(Rmodel, testingtestingQtty))
 
-prediction<- predict(Rmodel, testingSubQuant)
+prediction<- predict(Rmodel, testingtestingQtty)
 print(prediction)
 ```
 
