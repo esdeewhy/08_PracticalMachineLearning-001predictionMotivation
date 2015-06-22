@@ -1,0 +1,74 @@
+---
+title: "PracticalMachineLearning-001predictionMotivation"
+author: "esdeewhy"
+date: "June 21, 2015"
+output: pdf_document
+---
+
+BACKGROUND
+---
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement – a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset). 
+
+DATA PREPARATION AND PROCESSING
+---
+```{r}
+## Needed library
+library(randomForest) # to build the model
+library(caret)
+
+testing <- read.csv("pml-testing.csv")
+training <- read.csv("pml-training.csv")
+dim(training)
+```
+
+CLEANING THE DATA
+---
+The data consists of 160 columns and 19622 rows. We will clean the data in order to get a data set of 52 possible predictors.
+
+```{r}
+# Remove any nonquantitative variables
+trainingSub <- training[-c(1:7)]
+trainingSubQuant <- trainingSub[, sapply(trainingSub, is.numeric)]
+trainingSubQuant$classe <- training$classe
+# Removing all columsn with only NA values
+trainingSubQuant <- trainingSubQuant[,! colSums(is.na(trainingSubQuant)) >= 19216]
+
+dim(trainingSubQuant)
+```
+
+MODELING
+---
+We will use Random forests in order to generate the prediction model from the training data set.
+```{r}
+
+trainingSet <- trainingSubQuant
+# Random forest to find the classification model with training.train data set.
+Rmodel <- randomForest(classe ~ ., data=trainingSet, ntree=50)
+print(Rmodel)
+```
+
+PREDICTION
+---
+The testing data set consits of 20 rows and 160 variables. The question is to know if we can accurately predict what exercise routine (variable classe) is being accomplished by a set of quantitative measurements. The testing data set does not contain the classe variable but will be predicted from the quantitative variables present in the data set.
+
+The same variables used in the model generated from the training set must also be used to predict the exercise routine in the testing data sets. This means we must follow the same cleanup workflow on the testing data set.
+
+```{r}
+# Remove any nonquantitative variables
+testingSub <- testing[-c(1:7)]
+testingSubQuant <- testingSub[, sapply(testingSub, is.numeric)]
+
+## Add back the Classe variable
+testingSubQuant$classe <- testing$classe
+
+# Data cleanup
+
+## Remove all columsn that are only NA values
+testingSubQuant <- testingSubQuant[,! colSums(is.na(testingSubQuant)) >= 19216]
+
+pred <- as.character(predict(Rmodel, testingSubQuant))
+
+prediction<- predict(Rmodel, testingSubQuant)
+print(prediction)
+```
+sudo tlmgr install titling.sty
