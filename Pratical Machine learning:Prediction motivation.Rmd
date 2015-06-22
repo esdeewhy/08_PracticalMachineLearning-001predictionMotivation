@@ -71,4 +71,4 @@ pred <- as.character(predict(Rmodel, testingSubQuant))
 prediction<- predict(Rmodel, testingSubQuant)
 print(prediction)
 ```
-sudo tlmgr install titling.sty
+
