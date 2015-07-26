@@ -1,8 +1,8 @@
 ---
 title: "PracticalMachineLearning-001predictionMotivation"
 author: "esdeewhy"
-date: "June 21, 2015"
-output: html_document
+date: "July 21, 2015"
+output: word_document
 ---
 
 BACKGROUND
